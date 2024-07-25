@@ -16,6 +16,8 @@ const login = asyncHandler(async(req, res, next) => {
         return next(new ErrorHandler('Invalid username or password', 401));
     }
 
+    res.send('Login successful');
+
 });
 
 module.exports = { login };
