@@ -5,6 +5,8 @@ const connectDB = require('./config/connectDB');
 const userRoutes = require('./routes/user.route');
 dotenv.config();
 
+// Middleware to parse body
+app.use(express.json());
 const port = process.env.PORT || 4000;
 
 connectDB();

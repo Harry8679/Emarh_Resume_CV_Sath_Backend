@@ -20,7 +20,12 @@ const login = asyncHandler(async(req, res, next) => {
 
 });
 
-module.exports = { login };
+/** ------------------- Register -------------------- */
+const register = asyncHandler(async(req, res) => {
+    res.send('Register successful');
+});
+
+module.exports = { login, register };
 
 // /*----------------- Register an Account ----------------- */
 // export const register = asyncHandler(async(req, res) => {
