@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
-// import ErrorHandler from '../utils/errorHandler.util';
 const User = require('../models/user.model');
 const ErrorHandler = require('../utils/errorHandler.util');
+const { check, validationResult } = require('express-validator');
 
 /** ------------------- Login -------------------- */
 const login = asyncHandler(async(req, res, next) => {
@@ -24,6 +24,12 @@ const login = asyncHandler(async(req, res, next) => {
 
 /** ------------------- Register -------------------- */
 const register = asyncHandler(async(req, res) => {
+    const errors = validationResult(req);
+    console.log(req.body);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
     res.send('Register successful');
 });
 
