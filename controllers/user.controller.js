@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const User = require('../models/user.model');
 const ErrorHandler = require('../utils/errorHandler.util');
 const { check, validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
 
 /** ------------------- Login -------------------- */
 const login = asyncHandler(async(req, res, next) => {
@@ -39,6 +40,8 @@ const register = asyncHandler(async(req, res) => {
     }
 
     user = new User({ username, password });
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
     user.save();
     res.send('User created successfully');
 });
