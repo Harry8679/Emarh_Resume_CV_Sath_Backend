@@ -1,5 +1,7 @@
 const asyncHandler = require('express-async-handler');
+// import ErrorHandler from '../utils/errorHandler.util';
 const User = require('../models/user.model');
+const ErrorHandler = require('../utils/errorHandler.util');
 
 /** ------------------- Login -------------------- */
 const login = asyncHandler(async(req, res, next) => {
