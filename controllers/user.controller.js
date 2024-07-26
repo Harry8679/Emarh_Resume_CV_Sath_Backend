@@ -34,10 +34,13 @@ const register = asyncHandler(async(req, res) => {
     const { username, password } = req.body;
     let user = await User.findOne({ username: username });
 
-    if (!user) {
+    if (user) {
         return res.status(400).json({ message: 'User already exists.' });
     }
-    res.send('Register successful');
+
+    user = new User({ username, password });
+    user.save();
+    res.send('User created successfully');
 });
 
 module.exports = { login, register };
