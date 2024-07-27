@@ -3,6 +3,9 @@ const User = require('../models/user.model');
 const ErrorHandler = require('../utils/errorHandler.util');
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+dotenv.config();
 
 /** ------------------- Login -------------------- */
 const login = asyncHandler(async(req, res, next) => {
@@ -43,7 +46,17 @@ const register = asyncHandler(async(req, res) => {
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
     user.save();
-    res.send('User created successfully');
+
+    const payload = {
+        user: {
+            id: user.id,
+        }
+    };
+    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 * 24 }, (err, token) => {
+        if (err) throw err;
+        res.json({ token });
+    });
+    // res.send('User created successfully');
 });
 
 module.exports = { login, register };
