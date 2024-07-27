@@ -8,7 +8,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 /** ------------------- Login -------------------- */
-const login = async (req, res) => {
+const login = asyncHandler(async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -42,7 +42,7 @@ const login = async (req, res) => {
     } catch(error) {
         console.log(error);
     }
-}
+});
 
 /** ------------------- Register -------------------- */
 const register = asyncHandler(async(req, res) => {
