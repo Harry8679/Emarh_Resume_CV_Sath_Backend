@@ -8,23 +8,41 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 /** ------------------- Login -------------------- */
-const login = asyncHandler(async(req, res, next) => {
-    const { username, password } = req.body;
-
-    if (!username || !password) {
-        return next(new ErrorHandler('Please enter username and password', 400));
+const login = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
 
-    // Find user in the database
-    const user = await User.findOne({ username }).select('+password');
+    const { email, password } = req.body;
+    
+    try {
+        let user = await User.findOne({ email });
 
-    if (!user) {
-        return next(new ErrorHandler('Invalid username or password', 401));
+        if (!user) {
+            console.log(user);
+            return res.status(400).json({ errors: [{ msg: 'Invalid username or password' }] });
+        }
+
+        const match = await bcrypt.compare(password, user.password);
+
+        if (!match) {
+            return res.status(400).json({ errors: [{ msg: 'Invalid username or password' }] });
+        }
+
+        const payload = {
+            user: {
+                id: user.id,
+            }
+        };
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 * 24 }, (err, token) => {
+            if (err) throw err;
+            res.json({ token });
+        });
+    } catch(error) {
+        console.log(error);
     }
-
-    res.send('Login successful');
-
-});
+}
 
 /** ------------------- Register -------------------- */
 const register = asyncHandler(async(req, res) => {
